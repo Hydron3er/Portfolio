@@ -1,69 +1,60 @@
 const canvas = document.getElementById("snow");
 const ctx = canvas.getContext("2d");
 
-let snowflakes = [];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resize);
+resize();
 
-function createSnowflake() {
-  const x = Math.random() * canvas.width;
-  const y = Math.random() * canvas.height;
-  const radius = Math.random() * 3 + 1;
-  const speed = Math.random() + 0.5;
-  return { x, y, radius, speed };
+const numFlakes = 150;
+let flakes = [];
+
+for(let i=0;i<numFlakes;i++){
+  flakes.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    size: Math.random()*6+2,
+    speed: Math.random()*1.5 + 0.5,
+  });
 }
 
-function drawSnowflake(snowflake, color) {
-  ctx.beginPath();
-  ctx.arc(snowflake.x, snowflake.y, snowflake.radius, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
-}
-
-function updateSnowflake(snowflake) {
-  snowflake.y += snowflake.speed;
-  if (snowflake.y > canvas.height) {
-    snowflake.y = 0;
-    snowflake.x = Math.random() * canvas.width;
-  }
-}
-
-function getSectionColor() {
+function getSectionColor(){
   const sections = document.querySelectorAll(".page");
   let current = "white";
   sections.forEach(section => {
     const rect = section.getBoundingClientRect();
-    if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+    if(rect.top <= window.innerHeight/2 && rect.bottom >= window.innerHeight/2){
       current = section.classList.contains("black") ? "black" : "white";
     }
   });
   return current;
 }
 
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+function drawTriangle(x,y,size,color){
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x, y-size);
+  ctx.lineTo(x-size/2, y+size/2);
+  ctx.lineTo(x+size/2, y+size/2);
+  ctx.closePath();
+  ctx.fill();
+}
 
-  const currentSectionColor = getSectionColor();
-  const flakeColor = currentSectionColor === "black" ? "white" : "black";
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const secColor = getSectionColor();
+  const flakeColor = secColor==="black" ? "white" : "black";
 
-  snowflakes.forEach((snowflake, i) => {
-    drawSnowflake(snowflake, flakeColor);
-    updateSnowflake(snowflake);
+  flakes.forEach(flake=>{
+    drawTriangle(flake.x,flake.y,flake.size,flakeColor);
+    flake.y += flake.speed;
+    if(flake.y>canvas.height){
+      flake.y = 0;
+      flake.x = Math.random()*canvas.width;
+    }
   });
-
   requestAnimationFrame(animate);
 }
-
-function init() {
-  for (let i = 0; i < 150; i++) {
-    snowflakes.push(createSnowflake());
-  }
-  animate();
-}
-
-window.addEventListener("resize", () => {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-});
-
-init();
+animate();
