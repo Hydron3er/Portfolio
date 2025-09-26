@@ -3,72 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Omar Zayat Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>Snow Test</title>
+  <style>
+    body, html { margin: 0; padding: 0; overflow: hidden; }
+    #snow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+    }
+  </style>
 </head>
 <body>
-  <!-- Canvas for snow particles -->
   <canvas id="snow"></canvas>
+  <script>
+    const canvas = document.getElementById("snow");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-  <!-- Content -->
-  <section class="page white">
-    <div class="content">
-      <h1>Omar Zayat</h1>
-      <p class="subtitle">Robotics & Mechanical Design | Portfolio</p>
+    let snowflakes = [];
+    function createSnowflake() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 3 + 1,
+        s: Math.random() + 0.5
+      };
+    }
 
-      <h2>Skills</h2>
-      <ul>
-        <li><b>CAD & Mechanical Design:</b> Onshape, Fusion 360</li>
-        <li><b>Simulation & Analysis:</b> Autodesk CFD</li>
-        <li><b>3D Modeling & Visualization:</b> Blender</li>
-        <li><b>Additive Manufacturing:</b> 3D printing for rapid prototyping</li>
-        <li><b>Electrical Diagnostics:</b> Wiring diagrams, multimeter troubleshooting, automotive systems</li>
-        <li><b>Tools & Equipment:</b> Skid steer loader, stick welding, excavator operation</li>
-      </ul>
-    </div>
-  </section>
+    function drawSnowflake(sf) {
+      ctx.beginPath();
+      ctx.arc(sf.x, sf.y, sf.r, 0, Math.PI * 2);
+      ctx.fillStyle = "white";
+      ctx.fill();
+    }
 
-  <section class="page black">
-    <div class="content">
-      <h2>Watchman LLC</h2>
-      <p><b>Product Designer</b> — Revamped self-defense weapon system and accessories from concept to production. Utilized Fusion 360 CAD, 4-axis CAM simulation, and 3D printing for prototyping. Prioritized ease of manufacturing and cost efficiency, reducing machining time and per-part cost while preserving functionality.</p>
-    </div>
-  </section>
+    function updateSnowflake(sf) {
+      sf.y += sf.s;
+      if (sf.y > canvas.height) {
+        sf.y = 0;
+        sf.x = Math.random() * canvas.width;
+      }
+    }
 
-  <section class="page white">
-    <div class="content">
-      <h2>FRC 2025</h2>
-      <p><b>Mechanical Team</b> — Designed and built a high-performance Coral Launching Flywheel System for UCSD and Orange County regionals. Used Onshape and Fusion 360 for CAD with iterative prototyping to optimize accuracy, velocity, and energy efficiency. Collaborated with electrical and programming teams to tune PID control and synchronize autonomous/teleop performance.</p>
-    </div>
-  </section>
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      snowflakes.forEach(sf => {
+        drawSnowflake(sf);
+        updateSnowflake(sf);
+      });
+      requestAnimationFrame(animate);
+    }
 
-  <section class="page black">
-    <div class="content">
-      <h2>Construction Apprentice Intern</h2>
-      <p>Fabricated 22% of light gauge steel framing structures for Anne Taylor at Fashion Valley Mall. Coordinated with non-English speaking individuals through visual means. Operated skid steer loader and 3-ton excavator for site leveling. Coordinated site layout efforts with a 5-person team, improving framing efficiency by 15%.</p>
-    </div>
-  </section>
-
-  <section class="page white">
-    <div class="content">
-      <h2>Mechanical Design Intern — Step Support</h2>
-      <p>Designed high-quality, custom-fit prosthetics for disabled dogs, improving mobility and comfort. Used Fusion 360 for mechanical design, Blender for ergonomic modeling, and Autodesk CFD for stress simulation. Collaborated with veterinarians and fabrication teams, using 3D printing for rapid prototyping and iterative testing.</p>
-    </div>
-  </section>
-
-  <section class="page black">
-    <div class="content">
-      <h2>Personal Projects</h2>
-      <ul>
-        <li><b>Blastwave Protection</b> — Developed a solution to mitigate blast waves in combat scenarios to prevent traumatic brain injury (TBI).</li>
-        <li><b>Catch Can System</b> — Designed an efficient catch can system with a turbine design for maximum oil separation without airflow restriction.</li>
-        <li><b>BMW 320i Rally Build</b> — Stage 2 91/e30 AWD rally-prepped car. Focus on performance tuning, mechanical diagnostics, and system optimization.</li>
-      </ul>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+    for (let i = 0; i < 150; i++) snowflakes.push(createSnowflake());
+    animate();
+  </script>
 </body>
 </html>
 
