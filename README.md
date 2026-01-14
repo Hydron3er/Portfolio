@@ -1,1 +1,2 @@
-// gay ahh nga
+//if you're reading this you are black
+
